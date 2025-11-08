@@ -4,7 +4,8 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
-import Home from "./pages/Home"; // Import the new Home page
+import Home from "./pages/Home";
+import Profile from "./pages/Profile"; // Import Profile page
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
         }
       >
         <Route index element={<Home />} />
+        <Route path="profile/:username" element={<Profile />} />
       </Route>
 
       {/* Public Routes */}
