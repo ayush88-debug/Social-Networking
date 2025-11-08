@@ -33,13 +33,13 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white p-4">
-      <Card className="w-full max-w-md bg-gray-800 border-gray-700">
+    <div className="min-h-screen flex items-center justify-center bg-muted/50 p-4">
+      <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">
             Admin Panel
           </CardTitle>
-          <CardDescription className="text-center text-gray-400">
+          <CardDescription className="text-center">
             Secure sign in
           </CardDescription>
         </CardHeader>
@@ -53,7 +53,6 @@ export default function AdminLogin() {
                 type="email"
                 value={form.email}
                 onChange={onChange}
-                className="bg-gray-700 border-gray-600"
                 placeholder="admin@example.com"
                 required
               />
@@ -64,8 +63,6 @@ export default function AdminLogin() {
                 id="password"
                 name="password"
                 type="password"
-                value={form.password}
-                className="bg-gray-700 border-gray-600"
                 onChange={onChange}
                 required
               />
@@ -75,7 +72,7 @@ export default function AdminLogin() {
               <p className="text-sm text-destructive">{error}</p>
             )}
 
-            <Button type="submit" disabled={loading} className="w-full bg-primary hover:bg-primary/90">
+            <Button type="submit" disabled={loading} className="w-full">
               {loading ? "Logging in..." : "Login"}
             </Button>
           </form>

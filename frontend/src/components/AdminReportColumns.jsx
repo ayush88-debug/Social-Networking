@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Check, X, AlertOctagon } from "lucide-react";
+import { MoreHorizontal, Check, X } from "lucide-react";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 
@@ -59,10 +59,10 @@ export const columns = (handleUpdateStatus) => [
       const status = row.original.status;
       const color =
         status === "resolved"
-          ? "bg-green-800 text-green-200"
+          ? "bg-green-100 text-green-800"
           : status === "dismissed"
-          ? "bg-gray-700 text-gray-200"
-          : "bg-yellow-800 text-yellow-200";
+          ? "bg-gray-100 text-gray-800"
+          : "bg-yellow-100 text-yellow-800";
       return (
         <div
           className={`capitalize px-2 py-0.5 rounded-full text-xs font-medium inline-block ${color}`}
@@ -94,7 +94,7 @@ export const columns = (handleUpdateStatus) => [
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-gray-900 border-gray-700">
+          <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => handleUpdateStatus(report._id, "resolved")}>
               <Check className="mr-2 h-4 w-4 text-green-500" />
               Mark as Resolved

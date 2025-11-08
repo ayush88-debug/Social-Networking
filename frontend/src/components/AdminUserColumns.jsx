@@ -25,7 +25,7 @@ export const columns = (handleDeleteUser, handleEditRole) => [
         </Avatar>
         <div>
           <div className="font-medium">{row.original.fullname}</div>
-          <div className="text-sm text-gray-400">@{row.original.username}</div>
+          <div className="text-sm text-muted-foreground">@{row.original.username}</div>
         </div>
       </div>
     ),
@@ -40,8 +40,8 @@ export const columns = (handleDeleteUser, handleEditRole) => [
     cell: ({ row }) => (
       <div className={`capitalize px-2 py-0.5 rounded-full text-xs font-medium inline-block ${
         row.original.role === 'admin' 
-        ? 'bg-green-800 text-green-200' 
-        : 'bg-gray-700 text-gray-200'
+        ? 'bg-primary text-primary-foreground' 
+        : 'bg-secondary text-secondary-foreground'
       }`}>
         {row.original.role}
       </div>
@@ -66,12 +66,12 @@ export const columns = (handleDeleteUser, handleEditRole) => [
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-gray-900 border-gray-700">
+          <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => handleEditRole(user)}>
               Change Role
             </DropdownMenuItem>
             <DropdownMenuItem
-              className="text-red-500"
+              className="text-destructive"
               onClick={() => handleDeleteUser(user._id)}
             >
               Delete User

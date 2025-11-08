@@ -21,7 +21,7 @@ const UserCell = ({ user }) => (
     </Avatar>
     <div>
       <div className="font-medium">{user.fullname}</div>
-      <div className="text-sm text-gray-400">@{user.username}</div>
+      <div className="text-sm text-muted-foreground">@{user.username}</div>
     </div>
   </div>
 );
@@ -44,10 +44,10 @@ export const columns = (handleManageRequest) => [
       const status = row.original.status;
       const color =
         status === "accepted"
-          ? "bg-green-800 text-green-200"
+          ? "bg-green-100 text-green-800"
           : status === "rejected"
-          ? "bg-red-800 text-red-200"
-          : "bg-yellow-800 text-yellow-200";
+          ? "bg-red-100 text-red-800"
+          : "bg-yellow-100 text-yellow-800";
       return (
         <div
           className={`capitalize px-2 py-0.5 rounded-full text-xs font-medium inline-block ${color}`}
@@ -77,7 +77,7 @@ export const columns = (handleManageRequest) => [
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-gray-900 border-gray-700">
+          <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => handleManageRequest(request._id, "accepted")}>
               <Check className="mr-2 h-4 w-4 text-green-500" />
               Accept Request

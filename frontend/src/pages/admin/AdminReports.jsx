@@ -59,7 +59,7 @@ export default function AdminReports() {
           <TabsTrigger value="dismissed">Dismissed</TabsTrigger>
           <TabsTrigger value="all">All</TabsTrigger>
         </TabsList>
-        <Card className="mt-4 bg-gray-800 border-gray-700">
+        <Card className="mt-4">
           <CardContent className="pt-6">
             <TabsContent value="pending">
               <DataTable columns={tableColumns} data={filteredReports("pending")} />

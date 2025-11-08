@@ -22,6 +22,7 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
+      // Admin check is removed. This is now a standard user login.
       const data = await api.login(form.email, form.password);
       setUser(data.user);
       navigate("/");
@@ -84,6 +85,17 @@ export default function Login() {
                 className="font-medium text-primary hover:underline"
               >
                 Sign Up
+              </Link>
+            </p>
+            
+            {/* Added Admin Login Link */}
+            <p className="text-center text-sm text-muted-foreground pt-2">
+              Are you an admin?{" "}
+              <Link
+                to="/admin/login"
+                className="font-medium text-primary hover:underline"
+              >
+                Login here
               </Link>
             </p>
           </form>

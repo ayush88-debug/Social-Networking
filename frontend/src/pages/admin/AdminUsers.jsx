@@ -79,16 +79,16 @@ export default function AdminUsers() {
       <DataTable columns={columns(handleDeleteUser, handleEditRole)} data={users} />
 
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="bg-gray-800 border-gray-700">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Role for {selectedUser?.username}</DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <Select value={newRole} onValueChange={setNewRole}>
-              <SelectTrigger className="w-full bg-gray-700 border-gray-600">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a role" />
               </SelectTrigger>
-              <SelectContent className="bg-gray-900 border-gray-700">
+              <SelectContent>
                 <SelectItem value="user">User</SelectItem>
                 <SelectItem value="admin">Admin</SelectItem>
               </SelectContent>
