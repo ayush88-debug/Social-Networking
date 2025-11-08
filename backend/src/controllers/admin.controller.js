@@ -3,11 +3,14 @@ import { Post } from "../models/post.model.js";
 import { Comment } from "../models/comment.model.js";
 import { Like } from "../models/like.model.js";
 import { FriendRequest } from "../models/friendRequest.model.js";
+import { Report } from "../models/report.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { generateAccessAndRefreshToken } from "./user.controller.js";
 import { deleteFromCloudinary } from "../utils/deleteCloudinary.js";
+
+
 
 const adminLogin = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
@@ -120,8 +123,6 @@ const updateUserRole = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, user, "User role updated successfully"));
 });
 
-// === Post Management ===
-
 const adminGetAllPosts = asyncHandler(async (req, res) => {
     const posts = await Post.find()
         .populate("owner", "username fullname avatar")
@@ -156,8 +157,6 @@ const adminDeletePost = asyncHandler(async (req, res) => {
         .status(200)
         .json(new ApiResponse(200, {}, "Post deleted successfully by admin"));
 });
-
-// === Friendship Management ===
 
 const adminGetAllFriendRequests = asyncHandler(async (req, res) => {
     const requests = await FriendRequest.find()
@@ -204,6 +203,74 @@ const adminManageFriendRequest = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, request, `Friend request ${status}`));
 });
 
+const adminGetReports = asyncHandler(async (req, res) => {
+    const { status } = req.query;
+    const query = {};
+    if (status) {
+        query.status = status;
+    }
+
+    const reports = await Report.find(query)
+        .populate("reporter", "username fullname")
+        .populate("reportedUser", "username fullname")
+        .populate("reportedPost", "content")
+        .sort({ createdAt: -1 });
+    
+    return res
+        .status(200)
+        .json(new ApiResponse(200, reports, "Reports fetched successfully"));
+});
+
+const adminUpdateReportStatus = asyncHandler(async (req, res) => {
+    const { reportId } = req.params;
+    const { status } = req.body;
+
+    if (!['resolved', 'dismissed'].includes(status)) {
+        throw new ApiError(400, "Invalid status. Must be 'resolved' or 'dismissed'");
+    }
+
+    const report = await Report.findByIdAndUpdate(
+        reportId,
+        { $set: { status } },
+        { new: true }
+    );
+
+    if (!report) {
+        throw new ApiError(404, "Report not found");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, report, "Report status updated successfully"));
+});
+
+
+const getAnalytics = asyncHandler(async (req, res) => {
+    const totalUsers = await User.countDocuments();
+    const totalPosts = await Post.countDocuments();
+    const totalComments = await Comment.countDocuments();
+    const totalLikes = await Like.countDocuments();
+
+    
+    
+    const oneDayAgo = new Date(new Date().setDate(new Date().getDate() - 1));
+    const newUsersLast24h = await User.countDocuments({ createdAt: { $gte: oneDayAgo } });
+    const newPostsLast24h = await Post.countDocuments({ createdAt: { $gte: oneDayAgo } });
+
+    const analyticsData = {
+        totalUsers,
+        totalPosts,
+        totalComments,
+        totalLikes,
+        newUsersLast24h,
+        newPostsLast24h
+    };
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, analyticsData, "Analytics data fetched successfully"));
+});
+
 export {
     adminLogin,
     getAllUsers,
@@ -212,5 +279,8 @@ export {
     adminGetAllPosts,
     adminDeletePost,
     adminGetAllFriendRequests,
-    adminManageFriendRequest
+    adminManageFriendRequest,
+    adminGetReports,
+    adminUpdateReportStatus,
+    getAnalytics
 };

@@ -7,7 +7,10 @@ import {
     adminGetAllPosts,
     adminDeletePost,
     adminGetAllFriendRequests,
-    adminManageFriendRequest
+    adminManageFriendRequest,
+    adminGetReports,
+    adminUpdateReportStatus,
+    getAnalytics
 } from "../controllers/admin.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { verifyAdmin } from "../middlewares/admin.middleware.js";
@@ -18,6 +21,9 @@ router.route("/login").post(adminLogin);
 
 // Protected Admin Routes
 router.use(verifyJWT, verifyAdmin);
+
+router.route("/analytics")
+    .get(getAnalytics);
 
 // User Management
 router.route("/users")
@@ -43,5 +49,11 @@ router.route("/friendships")
 router.route("/friendships/:requestId")
     .patch(adminManageFriendRequest);
 
+// Reporting System
+router.route("/reports")
+    .get(adminGetReports);
+
+router.route("/reports/:reportId")
+    .patch(adminUpdateReportStatus);
 
 export default router;

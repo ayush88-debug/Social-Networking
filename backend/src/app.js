@@ -35,6 +35,10 @@ import commentRouter from "./routes/comment.routes.js"
 app.use("/api/v1/comment", commentRouter)
 
 
+import reportRouter from "./routes/report.routes.js"
+app.use("/api/v1/report", reportRouter)
+
+
 import adminRouter from "./routes/admin.routes.js"
 app.use("/api/v1/admin", adminRouter)
 
