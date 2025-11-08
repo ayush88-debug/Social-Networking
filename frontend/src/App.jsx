@@ -5,7 +5,10 @@ import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
-import Profile from "./pages/Profile"; // Import Profile page
+import Profile from "./pages/Profile";
+import Friends from "./pages/Friends";
+import Messages from "./pages/Messages";
+import Notifications from "./pages/Notifications"; // Import the new Notifications page
 
 export default function App() {
   return (
@@ -20,6 +23,9 @@ export default function App() {
       >
         <Route index element={<Home />} />
         <Route path="profile/:username" element={<Profile />} />
+        <Route path="friends" element={<Friends />} />
+        <Route path="messages" element={<Messages />} />
+        <Route path="notifications" element={<Notifications />} /> {/* Add the notifications route */}
       </Route>
 
       {/* Public Routes */}

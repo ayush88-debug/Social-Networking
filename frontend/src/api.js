@@ -13,7 +13,6 @@ const client = axios.create({
 
 client.interceptors.response.use(
   (response) => {
-    
     if (response.status === 204) {
       return Promise.resolve(null);
     }
