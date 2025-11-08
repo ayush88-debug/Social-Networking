@@ -2,6 +2,7 @@ import { User } from "../models/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { deleteFromCloudinary } from "../utils/deleteCloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 
@@ -219,10 +220,192 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     );
 });
 
+const getCurrentUser = asyncHandler(async (req, res) => {
+  const user = req.user;
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "User fetched successfully"));
+});
+
+const updateAccountDetails = asyncHandler(async (req, res) => {
+  const { fullname, email, bio } = req.body;
+
+  if (!(fullname || email || bio)) {
+    throw new ApiError(400, "At least one field (fullname, email, bio) is required");
+  }
+
+  if (email) {
+    const existedUser = await User.findOne({ email });
+    if (existedUser && existedUser._id.toString() !== req.user._id.toString()) {
+      throw new ApiError(400, "Email already in use");
+    }
+  }
+
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        fullname: fullname,
+        email: email,
+        bio: bio
+      },
+    },
+    {
+      new: true,
+    }
+  ).select("-password -refreshToken");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "Account details updated successfully"));
+});
+
+const updateUserAvatar = asyncHandler(async (req, res) => {
+  let avatarLocalPath;
+
+  avatarLocalPath = req.file?.path || null;
+
+  if (!avatarLocalPath) {
+    throw new ApiError(400, "avatar image is required");
+  }
+
+  const avatar = await uploadOnCloudinary(avatarLocalPath);
+
+  if (!avatar) {
+    throw new ApiError(500, "avatar upload on cloudinary FAILED");
+  }
+
+  if (req.user?.avatar) {
+    const publicId = req.user.avatar.split("/").pop().split(".")[0];
+    if (publicId) {
+      await deleteFromCloudinary(publicId);
+    }
+  }
+
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        avatar: avatar?.url,
+      },
+    },
+    {
+      new: true,
+    }
+  ).select("-password -refreshToken");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "User avatar is Successfully updated"));
+});
+
+const updateUserCoverImage = asyncHandler(async (req, res) => {
+  let coverImageLocalPath;
+
+  coverImageLocalPath = req.file?.path || null;
+
+  if (!coverImageLocalPath) {
+    throw new ApiError(400, "coverImage image is required");
+  }
+
+  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+
+  if (!coverImage) {
+    throw new ApiError(500, "coverImage upload on cloudinary FAILED");
+  }
+
+  if (req.user?.coverImage) {
+    const publicId = req.user.coverImage.split("/").pop().split(".")[0];
+    if (publicId) {
+      await deleteFromCloudinary(publicId);
+    }
+  }
+
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        coverImage: coverImage?.url,
+      },
+    },
+    {
+      new: true,
+    }
+  ).select("-password -refreshToken");
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, user, "User coverImage is Successfully updated")
+    );
+});
+
+const changeCurrentPassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!(currentPassword && newPassword)) {
+    throw new ApiError(400, "All fields are required");
+  }
+
+  const user = await User.findById(req.user?._id);
+  const isPasswordValid = await user.isPasswordCorrect(currentPassword);
+
+  if (!isPasswordValid) {
+    throw new ApiError(400, "Incorrect Password");
+  }
+
+  user.password = newPassword;
+  await user.save({ validateBeforeSave: false });
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Password changed Successfully"));
+});
+
+const getUserProfile = asyncHandler(async (req, res) => {
+  const { username } = req.params;
+
+  if (!username?.trim()) {
+    throw new ApiError(400, "Username is required");
+  }
+
+  const userProfile = await User.aggregate([
+    {
+      $match: { username: username.toLowerCase() },
+    },
+    // We will add lookups for posts, friends, etc. here later
+    {
+      $project: {
+        fullname: 1,
+        username: 1,
+        avatar: 1,
+        coverImage: 1,
+        bio: 1,
+        createdAt: 1
+      },
+    },
+  ]);
+
+  if (!userProfile?.length) {
+    throw new ApiError(404, "User does not exist");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, userProfile[0], "User profile fetched successfully"));
+});
+
+
 export { 
     userRegister, 
     userLogin,
     userLogout,
     refreshAccessToken,
-    generateAccessAndRefreshToken 
+    generateAccessAndRefreshToken,
+    getCurrentUser,
+    updateAccountDetails,
+    updateUserAvatar,
+    updateUserCoverImage,
+    changeCurrentPassword,
+    getUserProfile
 };
