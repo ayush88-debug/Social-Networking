@@ -26,4 +26,12 @@ app.use("/api/v1/post", postRouter)
 import friendshipRouter from "./routes/friendship.routes.js"
 app.use("/api/v1/friendship", friendshipRouter)
 
+// Like Routes
+import likeRouter from "./routes/like.routes.js"
+app.use("/api/v1/like", likeRouter)
+
+// Comment Routes
+import commentRouter from "./routes/comment.routes.js"
+app.use("/api/v1/comment", commentRouter)
+
 export {app}
