@@ -42,4 +42,8 @@ app.use("/api/v1/report", reportRouter)
 import adminRouter from "./routes/admin.routes.js"
 app.use("/api/v1/admin", adminRouter)
 
+
+import searchRouter from "./routes/search.routes.js"
+app.use("/api/v1/search", searchRouter)
+
 export {app}

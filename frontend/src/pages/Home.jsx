@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import CreatePost from "@/components/CreatePost";
 import PostCard from "@/components/PostCard";
-import * as api from "@/api";
+import * as api from "../api";
+import { useAuth } from "@/context/AuthProvider";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { user } = useAuth(); 
 
   const fetchPosts = async () => {
     try {
@@ -24,9 +26,21 @@ export default function Home() {
   }, []);
 
   const handlePostCreated = (newPost) => {
-    // To show the new post instantly, we need to populate the owner info
-    // Or we can just refetch all posts
-    fetchPosts();
+    
+    const postWithOwner = {
+      ...newPost,
+      owner: {
+        _id: user._id,
+        username: user.username,
+        fullname: user.fullname,
+        avatar: user.avatar
+      }
+    };
+    setPosts([postWithOwner, ...posts]);
+  };
+
+  const handlePostDeleted = (deletedPostId) => {
+    setPosts(posts.filter(post => post._id !== deletedPostId));
   };
 
   return (
@@ -39,7 +53,7 @@ export default function Home() {
         
         <div className="space-y-6">
           {posts.map((post) => (
-            <PostCard key={post._id} post={post} />
+            <PostCard key={post._id} post={post} onPostDeleted={handlePostDeleted} />
           ))}
         </div>
       </div>

@@ -38,7 +38,7 @@ client.interceptors.response.use(
   }
 );
 
-
+// === User API ===
 export const register = (formData) => 
   client.post("/api/v1/user/register", formData, {
     headers: {
@@ -74,7 +74,7 @@ export const changeCurrentPassword = (data) =>
 export const getUserProfile = (username) =>
   client.get(`/api/v1/user/u/${username}`);
 
-
+// === Post API ===
 export const createPost = (formData) =>
   client.post("/api/v1/post", formData, {
     headers: { "Content-Type": "multipart/form-data" },
@@ -91,14 +91,14 @@ export const updatePost = (postId, data) =>
 export const deletePost = (postId) =>
   client.delete(`/api/v1/post/${postId}`);
 
-
+// === Like API ===
 export const togglePostLike = (postId) =>
   client.post(`/api/v1/like/${postId}`);
 
 export const getPostLikes = (postId) =>
   client.get(`/api/v1/like/${postId}`);
 
-
+// === Comment API ===
 export const addCommentToPost = (postId, data) =>
   client.post(`/api/v1/comment/${postId}`, data);
 
@@ -111,7 +111,7 @@ export const updateComment = (commentId, data) =>
 export const deleteComment = (commentId) =>
   client.delete(`/api/v1/comment/${commentId}`);
 
-
+// === Friendship API ===
 export const sendFriendRequest = (receiverId) =>
   client.post(`/api/v1/friendship/request/${receiverId}`);
 
@@ -128,3 +128,45 @@ export const getFriendsList = () => client.get("/api/v1/friendship/list");
 
 export const removeFriend = (friendId) =>
   client.delete(`/api/v1/friendship/remove/${friendId}`);
+  
+// === Report API ===
+export const createReport = (data) =>
+  client.post("/api/v1/report", data);
+
+// === Search API ===
+export const searchAll = (query) =>
+  client.get(`/api/v1/search?q=${query}`);
+
+// === Admin API ===
+export const adminLogin = (email, password) =>
+  client.post("/api/v1/admin/login", { email, password });
+
+export const adminGetAnalytics = () =>
+  client.get("/api/v1/admin/analytics");
+
+export const adminGetAllUsers = () =>
+  client.get("/api/v1/admin/users");
+
+export const adminDeleteUser = (userId) =>
+  client.delete(`/api/v1/admin/users/${userId}`);
+
+export const adminUpdateUserRole = (userId, role) =>
+  client.patch(`/api/v1/admin/users/${userId}/role`, { role });
+
+export const adminGetAllPosts = () =>
+  client.get("/api/v1/admin/posts");
+
+export const adminDeletePost = (postId) =>
+  client.delete(`/api/v1/admin/posts/${postId}`);
+
+export const adminGetAllFriendRequests = () =>
+  client.get("/api/v1/admin/friendships");
+
+export const adminManageFriendRequest = (requestId, status) =>
+  client.patch(`/api/v1/admin/friendships/${requestId}`, { status });
+
+export const adminGetReports = (status = "") =>
+  client.get(`/api/v1/admin/reports?status=${status}`);
+
+export const adminUpdateReportStatus = (reportId, status) =>
+  client.patch(`/api/v1/admin/reports/${reportId}`, { status });

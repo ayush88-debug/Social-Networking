@@ -39,7 +39,7 @@ export default function Friends() {
   const handleAccept = async (requestId) => {
     try {
       await api.acceptFriendRequest(requestId);
-      fetchFriendsAndRequests();
+      fetchFriendsAndRequests(); // Refetch all data
     } catch (error) {
       console.error("Failed to accept request:", error);
     }
@@ -48,7 +48,7 @@ export default function Friends() {
   const handleReject = async (requestId) => {
     try {
       await api.rejectFriendRequest(requestId);
-      setRequests(requests.filter((req) => req._id !== requestId));
+      setRequests(requests.filter((req) => req._id !== requestId)); // Optimistic update
     } catch (error) {
       console.error("Failed to reject request:", error);
     }
@@ -58,7 +58,7 @@ export default function Friends() {
     if (window.confirm("Are you sure you want to remove this friend?")) {
       try {
         await api.removeFriend(friendId);
-        setFriends(friends.filter((friend) => friend._id !== friendId));
+        setFriends(friends.filter((friend) => friend._id !== friendId)); // Optimistic update
       } catch (error) {
         console.error("Failed to remove friend:", error);
       }
